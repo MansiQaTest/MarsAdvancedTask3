@@ -1,0 +1,473 @@
+{
+	"info": {
+		"_postman_id": "3a7d20bc-f23d-4ce9-b7e1-e357459d897d",
+		"name": "ProfileApiTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36242894"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"personId\": 0,\r\n    \"description\": \"I’m a motivated professional who is passionate about IT.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/addInfo",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"addInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getInfo/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getInfo",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Availability,Hours,EarnTarget",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"AvailabilityType\": \"1\",\r\n    \"AvailableHours\": \"0\",\r\n    \"EarnTarget\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/updateAvailability",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"updateAvailability"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add info with invalid id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is false\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.false;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"personId\": \"'\",\r\n    \"description\": \"I’m a motivated professional who is passionate about IT.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/addInfo",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"addInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Availability,Hours,EarnTarget invalid id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is false\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.false;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"AvailabilityType\": \"p\",\r\n    \"AvailableHours\": \"p\",\r\n    \"EarnTarget\": \"o\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/updateAvailability",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"updateAvailability"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

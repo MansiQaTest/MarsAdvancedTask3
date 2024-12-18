@@ -1,0 +1,458 @@
+{
+	"info": {
+		"_postman_id": "77d685f1-5495-4cfe-bdc2-5c6fb4482684",
+		"name": "NotificationApiTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36242894"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNotification",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNotification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReadAllNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/readAllNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"readAllNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReadMarkedNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"{{id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/readMarkedNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"readMarkedNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeMarkedNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ids\": \"{{id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/removeMarkedNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"removeMarkedNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNewNotificationCount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNewNotificationCount",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNewNotificationCount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get NotificationLoadMore",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNotification/?loadMore=5&offSet=0&_={{id}}",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNotification",
+								""
+							],
+							"query": [
+								{
+									"key": "loadMore",
+									"value": "5"
+								},
+								{
+									"key": "offSet",
+									"value": "0"
+								},
+								{
+									"key": "_",
+									"value": "{{id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

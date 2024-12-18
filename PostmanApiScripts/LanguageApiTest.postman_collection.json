@@ -1,0 +1,684 @@
+{
+	"info": {
+		"_postman_id": "36a30317-7e4f-4674-944f-98105396b4cc",
+		"name": "LanguageApiTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36242894"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create language",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.success) {\r",
+									"    // Save the id to an environment variable\r",
+									"    pm.environment.set(\"id\", jsonData.id);\r",
+									"} else {\r",
+									"    console.log(\"Request failed, no ID to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\t\r\n{\r\n  \"name\": \"English\",\r\n  \"level\": \"Beginner\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/addLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"addLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Language",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{id}}\",\r\n    \"name\": \"English\",\r\n    \"level\": \"Conversational\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/updateLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"updateLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":\"{{id}}\"}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/deleteLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"deleteLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Data After Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getLanguage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create language with invalid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"if (jsonData.success) {\r",
+									"    // Save the id to an environment variable\r",
+									"    pm.environment.set(\"id\", jsonData.id);\r",
+									"} else {\r",
+									"    console.log(\"Request failed, no ID to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is false\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.false;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\t\r\n{\r\n  \"name\": \"%%%%\",\r\n  \"level\": \"\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/addLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"addLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Language with invalid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is false\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.false;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{id}}\",\r\n    \"name\": \"hjhjk\",\r\n    \"level\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/updateLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"updateLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getLanguage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":\"{{id}}\"}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/deleteLanguage",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"deleteLanguage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
