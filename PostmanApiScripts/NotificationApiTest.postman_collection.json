@@ -1,0 +1,680 @@
+{
+	"info": {
+		"_postman_id": "77d685f1-5495-4cfe-bdc2-5c6fb4482684",
+		"name": "NotificationApiTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36242894"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"var schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"isSuccess\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"token\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"token\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"expires\": {\r",
+									"          \"type\": \"number\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"token\",\r",
+									"        \"expires\"\r",
+									"      ]\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"isSuccess\",\r",
+									"    \"token\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.test(\"Validate schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv();\r",
+									"\r",
+									"const requestSchema = {\r",
+									"    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"rememberMe\": { \"type\": \"boolean\" },\r",
+									"        \"email\": { \"type\": \"string\" },\r",
+									"        \"password\": { \"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [ \"rememberMe\",\"email\",\"password\"]\r",
+									"};\r",
+									"\r",
+									"const requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+									"\r",
+									"const validate = ajv.compile(requestSchema);\r",
+									"const valid = validate(requestBody);\r",
+									"\r",
+									"if (!valid) {\r",
+									"    console.log(\"❌ Request JSON Schema Validation Failed:\", validate.errors);\r",
+									"    throw new Error(\"Request JSON Schema Validation Failed\");\r",
+									"} else {\r",
+									"    console.log(\"✅ Request JSON Schema Validation Passed\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" },\r",
+									"        \"userNotifications\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"id\": { \"type\": \"string\" },\r",
+									"                    \"name\": { \"type\": \"string\" },\r",
+									"                    \"url\": { \"type\": \"string\" },\r",
+									"                    \"message\": { \"type\": \"string\" },\r",
+									"                    \"isViewed\": { \"type\": \"boolean\" },\r",
+									"                    \"updatedOn\": { \"type\": \"string\", \"format\": \"date-time\" },\r",
+									"                    \"notificationType\": { \"type\": \"integer\" },\r",
+									"                    \"icon\": { \"type\": \"string\" }\r",
+									"                },\r",
+									"                \"required\": [\r",
+									"                    \"id\", \"name\", \"url\", \"message\",\r",
+									"                    \"isViewed\", \"updatedOn\", \"notificationType\", \"icon\"\r",
+									"                ]\r",
+									"            }\r",
+									"        },\r",
+									"        \"totalCount\": { \"type\": \"integer\" }\r",
+									"    },\r",
+									"    \"required\": [\"success\", \"userNotifications\", \"totalCount\"]\r",
+									"};\r",
+									"\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNotification",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNotification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReadAllNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" },\r",
+									"        \r",
+									"    },\r",
+									"    \"required\": [\"success\" ]\r",
+									"};\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/readAllNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"readAllNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReadMarkedNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" }\r",
+									"        \r",
+									"    },\r",
+									"    \"required\": [\"success\" ]\r",
+									"};\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const responseSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": { \"type\": \"string\", \"pattern\": \"^[a-f0-9]{24}$\"}\r",
+									"        },\r",
+									"        \"required\": [\"id\"]\r",
+									"    };\r",
+									"    \r",
+									"let requestBody = {};\r",
+									"try {\r",
+									"    requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+									"} catch (error) {\r",
+									"    console.log(\"❌ Error parsing request body:\", error);\r",
+									"}   "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"{{id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/readMarkedNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"readMarkedNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeMarkedNotifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" },\r",
+									"        \"message\": { \"type\": \"string\" }\r",
+									"\r",
+									"        \r",
+									"    },\r",
+									"    \"required\": [\"success\",\"message\" ]\r",
+									"};\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const responseSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": { \"type\": \"string\", \"pattern\": \"^[a-f0-9]{24}$\"}\r",
+									"        },\r",
+									"        \"required\": [\"id\"]\r",
+									"    };\r",
+									"    \r",
+									"let requestBody = {};\r",
+									"try {\r",
+									"    requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+									"} catch (error) {\r",
+									"    console.log(\"❌ Error parsing request body:\", error);\r",
+									"}   "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ids\": \"{{id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/removeMarkedNotifications",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"removeMarkedNotifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNewNotificationCount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" },\r",
+									"          \"noOfNotification\":{\"type\":\"integer\"} ,\r",
+									"         \"noOfMessages\": {\"type\":\"integer\"}\r",
+									"        \r",
+									"        \r",
+									"    },\r",
+									"    \"required\": [\"success\",\"noOfNotification\",\"noOfMessages\" ]\r",
+									"};\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNewNotificationCount",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNewNotificationCount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get NotificationLoadMore",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"var responseSchema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"success\": { \"type\": \"boolean\" },\r",
+									"        \"userNotifications\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"id\": { \"type\": \"string\" },\r",
+									"                    \"name\": { \"type\": \"string\" },\r",
+									"                    \"url\": { \"type\": \"string\" },\r",
+									"                    \"message\": { \"type\": \"string\" },\r",
+									"                    \"isViewed\": { \"type\": \"boolean\" },\r",
+									"                    \"updatedOn\": { \"type\": \"string\", \"format\": \"date-time\" },\r",
+									"                    \"notificationType\": { \"type\": \"integer\" },\r",
+									"                    \"icon\": { \"type\": \"string\" }\r",
+									"                },\r",
+									"                \"required\": [\r",
+									"                    \"id\", \"name\", \"url\", \"message\",\r",
+									"                    \"isViewed\", \"updatedOn\", \"notificationType\", \"icon\"\r",
+									"                ]\r",
+									"            }\r",
+									"        },\r",
+									"        \"totalCount\": { \"type\": \"integer\" }\r",
+									"    },\r",
+									"    \"required\": [\"success\", \"userNotifications\", \"totalCount\"]\r",
+									"};\r",
+									"\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(responseSchema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/notification/notification/getNotification/?loadMore=5&offSet=0&_={{id}}",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"notification",
+								"notification",
+								"getNotification",
+								""
+							],
+							"query": [
+								{
+									"key": "loadMore",
+									"value": "5"
+								},
+								{
+									"key": "offSet",
+									"value": "0"
+								},
+								{
+									"key": "_",
+									"value": "{{id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

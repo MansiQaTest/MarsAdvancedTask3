@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "b7644feb-eb57-4e03-9456-14220fa757c2",
+		"name": "ChatApiTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36242894"
+	},
+	"item": [
+		{
+			"name": "Positive Test",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"var schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"isSuccess\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"token\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"token\": {\r",
+									"          \"type\": \"string\"\r",
+									"        },\r",
+									"        \"expires\": {\r",
+									"          \"type\": \"number\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"token\",\r",
+									"        \"expires\"\r",
+									"      ]\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"isSuccess\",\r",
+									"    \"token\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.test(\"Validate schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"if (jsonData.isSuccess) {\r",
+									"    // Save the token to an environment variable\r",
+									"    pm.environment.set(\"token\", jsonData.token.token);\r",
+									"} else {\r",
+									"    console.log(\"Login failed, no token to save.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.isSuccess).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv();\r",
+									"\r",
+									"const requestSchema = {\r",
+									"    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"rememberMe\": { \"type\": \"boolean\" },\r",
+									"        \"email\": { \"type\": \"string\" },\r",
+									"        \"password\": { \"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [ \"rememberMe\",\"email\",\"password\"]\r",
+									"};\r",
+									"\r",
+									"const requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+									"\r",
+									"const validate = ajv.compile(requestSchema);\r",
+									"const valid = validate(requestBody);\r",
+									"\r",
+									"if (!valid) {\r",
+									"    console.log(\"❌ Request JSON Schema Validation Failed:\", validate.errors);\r",
+									"    throw new Error(\"Request JSON Schema Validation Failed\");\r",
+									"} else {\r",
+									"    console.log(\"✅ Request JSON Schema Validation Passed\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rememberMe\": false,\r\n    \"email\": \"{{username}}\",\r\n    \"password\": \"Qwerfdsa1@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/authentication/authentication/signin",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"authentication",
+								"authentication",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chatroom Details List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"success\": { \"type\": \"boolean\" },\r",
+									"    \"result\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"          \"userIdToList\": { \"type\": [\"array\", \"null\"] },  // Can be an array or null\r",
+									"          \"userIdTo\": { \"type\": \"string\" },  \r",
+									"          \"userNameTo\": { \"type\": \"string\" },  \r",
+									"          \"userIdFrom\": { \"type\": [\"string\", \"null\"] },  // Can be a string or null\r",
+									"          \"userNameFrom\": { \"type\": [\"string\", \"null\"] },  // Can be a string or null\r",
+									"          \"profilePicUrl\": { \"type\": \"string\" },  \r",
+									"          \"unreadMessages\": { \"type\": \"number\" }\r",
+									"        },\r",
+									"        \"required\": [\r",
+									"          \"userIdToList\",\r",
+									"          \"userIdTo\",\r",
+									"          \"userNameTo\",\r",
+									"          \"userIdFrom\",\r",
+									"          \"userNameFrom\",\r",
+									"          \"profilePicUrl\",\r",
+									"          \"unreadMessages\"\r",
+									"        ]\r",
+									"      }\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\"success\", \"result\"]\r",
+									"};\r",
+									"\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message || \"No message field in response\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const requestSchema = {    \r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"UserIdToList\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"string\"\r",
+									"            }\r",
+									"        }\r",
+									"    },\r",
+									"    \"required\": [\"UserIdToList\"]\r",
+									"};\r",
+									"let requestBody = {};\r",
+									"try {\r",
+									"    requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+									"} catch (error) {\r",
+									"    console.log(\"❌ Error parsing request body:\", error);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserIdToList\": [\r\n        \"666fae88efc0020001eb0da6\",\r\n        \"6681eaf6a23f560001043a72\",\r\n        \"666fae88efc0020001eb0da6\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getChatRoomDetailsList",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getChatRoomDetailsList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get FirstChat Room",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"let jsonData = pm.response.json();\r",
+									"const responseSchema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"success\": { \"type\": \"boolean\"},\r",
+									"            \"chatroom\" : { \"type\" : \"string\"},\r",
+									"            \"myCurrentUser\" : {\"type\" : \"string\"}\r",
+									"        },\r",
+									"        \"required\": [\"success\",\"chatroom\",\"myCurrentUser\"]\r",
+									"    };\r",
+									"// Validate JSON Schema\r",
+									"pm.test(\"Response matches schema\", function () {\r",
+									"    pm.expect(tv4.validate(jsonData, responseSchema), tv4.error).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if success is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"    console.log(jsonData.message);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseurl2}}/profile/profile/getFirstChatroom",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"profile",
+								"profile",
+								"getFirstChatroom"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
